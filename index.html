@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="uk">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#24483e"><title>Fundament — німецька з опорою</title><link rel="stylesheet" href="styles.css"><script defer src="data.js"></script><script defer src="grammar.js"></script><script defer src="sheets.js"></script><script defer src="more-sheets.js"></script><script defer src="library.js"></script><script defer src="app.js"></script></head>
+<body>
+<aside class="sidebar no-print">
+  <a class="brand" href="#library"><span class="brand-icon">f.</span><span>fundament<small>НІМЕЦЬКА З ОПОРОЮ</small></span></a>
+  <div class="sidebar-caption">ТВОЯ БІБЛІОТЕКА · A1–A2</div>
+  <nav id="nav" aria-label="Розділи"></nav>
+  <div class="sidebar-note"><span>Почни з малого.</span><p>Одна таблиця. Кілька прикладів.<br>Трохи більше впевненості.</p><div class="little-sheet">der <span>→ den</span> → dem</div></div>
+  <div class="offline"><i></i> Працює без інтернету</div>
+</aside>
+<div class="workspace">
+  <header class="topbar no-print"><span>Особиста полиця знань</span><div><span class="level-label">A1 → A2</span><button id="print-top" class="button primary">↗ Друк / PDF</button></div></header>
+  <main>
+    <section class="page-heading no-print"><div><div class="eyebrow" id="eyebrow">01 / ГРАМАТИЧНИЙ КОМПАС</div><h1 id="title"></h1><p id="subtitle"></p></div><div class="heading-mark" aria-hidden="true">Aa<span>основа за основою</span></div></section>
+    <section id="level-panel" class="level-panel no-print" aria-label="Рівень навчання"><div><label for="level">Мій рівень</label><select id="level"><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option></select></div><div class="level-copy"><strong id="level-note"></strong><p>Вищий рівень додає нові аркуші. База залишається під рукою.</p></div><label class="check"><input id="levelOnly" type="checkbox"> Лише цей рівень</label></section>
+    <div class="toolbar no-print"><label class="search"><span aria-hidden="true">⌕</span><input id="search" type="search" placeholder="Знайти слово або правило…" aria-label="Пошук у відкритому розділі"><kbd>/</kbd></label><div class="toolbar-controls"><button id="mono" class="button" aria-pressed="false">◐ Без кольору</button><button id="compact" class="button" aria-pressed="false">↕ Компактно</button></div></div>
+    <section class="highlight-controls no-print" aria-label="Налаштування підсвічування"><div><div class="legend-title">ПІДСВІЧУВАННЯ</div><p class="highlight-hint">Рід — колір тексту.<br>Відмінок — лінія та підпис.</p></div><div><label class="check"><input type="checkbox" id="highlightGenders" checked> Роди: der / die / das</label><label class="check"><input type="checkbox" id="highlightCases" checked> Відмінки у реченнях і таблицях</label></div><div><label class="select-label" for="caseFocus">Які відмінки підсвітити?</label><select id="caseFocus"><option value="all">Усі відмінки</option><option value="Nominativ">Лише Nominativ</option><option value="Akkusativ">Лише Akkusativ</option><option value="Dativ">Лише Dativ</option><option value="Genitiv">Лише Genitiv</option></select></div><div class="case-legend" aria-label="Позначення відмінків"><span data-case="Nominativ">Nom</span><span data-case="Akkusativ">Akk</span><span data-case="Dativ">Dat</span><span data-case="Genitiv">Gen</span></div></section><div class="content-layout">
+      <div><div id="filters" class="filters no-print"></div><article id="content" aria-live="polite"></article></div>
+      <aside class="settings no-print"><div class="settings-title"><span>Твій аркуш</span><span class="sheet-icon">▤</span></div><p>Залиш тільки те, що потрібно зараз.</p><label class="check"><input type="checkbox" id="translations" checked> Український переклад</label><label class="check"><input type="checkbox" id="examples" checked> Приклади речень</label><label class="check"><input type="checkbox" id="genitive"> Додати Genitiv</label><div class="setting-rule"></div><label class="select-label" for="paper">Формат паперу</label><select id="paper"><option value="A4">A4 · для стіни та папки</option><option value="A5">A5 · взяти із собою</option></select><button id="print" class="button primary wide">↗ Надрукувати аркуш</button><p class="print-hint" id="print-description"></p><div class="setting-rule"></div><div class="legend-title">КОЛІР = РІД ІМЕННИКА</div><div class="gender-legend"><span class="gender m">der <small>чоловічий</small></span><span class="gender f">die <small>жіночий</small></span><span class="gender n">das <small>середній</small></span><span class="gender p">die <small>множина</small></span></div><p class="print-hint">Рід зберігає свій колір, навіть коли артикль змінюється. Для чорно-білого друку є текстові підписи.</p></aside>
+    </div>
+    <footer class="no-print">fundament <span>Менше зубріння. Більше розуміння.</span><a href="#guide">Як користуватися ↗</a></footer>
+  </main>
+</div>
+<dialog id="detail"><button class="close button" aria-label="Закрити пояснення">✕</button><div class="eyebrow">РОЗБЕРІМОСЯ</div><h2 id="detail-title"></h2><div id="detail-body"></div><button class="button primary close-bottom">Зрозуміло</button></dialog>
+<style id="page-style">@page { size: A4; margin: 12mm; }</style>
+</body></html>

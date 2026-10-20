@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="uk">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#24483e"><title>Fundament — німецька з опорою</title><link rel="stylesheet" href="styles.css"><script defer src="data.js"></script><script defer src="vocabulary.js"></script><script defer src="grammar.js"></script><script defer src="sheets.js"></script><script defer src="more-sheets.js"></script><script defer src="library.js"></script><script defer src="app.js"></script></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#24483e"><title>Fundament — німецька з опорою</title><link rel="stylesheet" href="styles.css"><script defer src="data.js"></script><script defer src="vocabulary.js"></script><script defer src="grammar.js"></script><script defer src="sheets.js"></script><script defer src="more-sheets.js"></script><script defer src="library.js"></script><script defer src="locales.js"></script><script defer src="languages.js"></script><script defer src="app.js"></script></head>
 <body>
 <aside class="sidebar no-print">
   <a class="brand" href="#library"><span class="brand-icon">f.</span><span>fundament<small>НІМЕЦЬКА З ОПОРОЮ</small></span></a>
@@ -10,7 +10,7 @@
   <div class="offline"><i></i> Працює без інтернету</div>
 </aside>
 <div class="workspace">
-  <header class="topbar no-print"><span>Особиста полиця знань</span><div><span class="level-label">A1 → A2</span><button id="print-top" class="button primary">↗ Друк / PDF</button></div></header>
+  <header class="topbar no-print"><span>Особиста полиця знань</span><div><label class="language-switch" for="language">Мова <select id="language" data-i18n-skip><option value="uk">Українська</option><option value="en">English</option><option value="de">Deutsch</option></select></label><span class="level-label">A1 → A2</span><button id="print-top" class="button primary">↗ Друк / PDF</button></div></header>
   <main>
     <section class="page-heading no-print"><div><div class="eyebrow" id="eyebrow">01 / ГРАМАТИЧНИЙ КОМПАС</div><h1 id="title"></h1><p id="subtitle"></p></div><div class="heading-mark" aria-hidden="true">Aa<span>основа за основою</span></div></section>
     <section id="level-panel" class="level-panel no-print" aria-label="Рівень навчання"><div><label for="level">Мій рівень</label><select id="level"><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C1</option></select></div><div class="level-copy"><strong id="level-note"></strong><p>Вищий рівень додає нові аркуші та слова. База залишається під рукою.</p></div><label class="check"><input id="levelOnly" type="checkbox"> Лише цей рівень</label></section>

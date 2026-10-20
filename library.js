@@ -3,6 +3,7 @@ function currentSheet(){return SHEET_LIBRARY.sheets.find(s=>s.id===state.sheetId
 function levelRank(level){return SHEET_LIBRARY.levels.indexOf(level);}
 function availableSheets(){return SHEET_LIBRARY.sheets.filter(s=>state.levelOnly?s.level===state.level:levelRank(s.level)<=levelRank(state.level));}
 function tagged(text){
+  text=I18N.t(text);
   let out='',end=0;
   for(const m of String(text).matchAll(/\{([^|{}]+)\|(Nom|Akk|Dat|Gen)(?:\|([mfnp]))?\}/g)){
     out+=esc(text.slice(end,m.index));const kind=GRAMMAR.cases[m[2]],gender=m[3]||'';

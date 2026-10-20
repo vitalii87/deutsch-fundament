@@ -33,14 +33,14 @@ function renderReadySheet(){
 function ruleDetails(s){return s.more?`<details class="rule-details no-print"><summary>Детальніше про правило</summary><p>${tagged(s.more)}</p><p class="details-print-note">На друк іде коротка нагадувалка вище; розгорнуте пояснення залишається на екрані.</p></details>`:'';}
 function renderLevelPanel(){
   $('#level').value=state.level;$('#levelOnly').checked=state.levelOnly;
-  $('#level-note').textContent=state.levelOnly?`Лише аркуші ${state.level}`:`Усі опори від A1 до ${state.level}`;
+  $('#level-note').textContent=state.levelOnly?`Лише ${state.module==='dictionary'?'слова':'аркуші'} ${state.level}`:`Усі опори від A1 до ${state.level}`;
   document.body.classList.toggle('library-view',state.module==='library');
   document.body.classList.toggle('ready-view',state.module==='ready');
   document.body.classList.toggle('paper-preview',state.module==='ready'&&state.paperPreview);
-  $('#level-panel').hidden=!['library','ready'].includes(state.module);
+  $('#level-panel').hidden=!['library','ready','dictionary'].includes(state.module);
   $('.level-label').textContent=state.level;
   $('.sidebar-caption').textContent='ТВОЯ БІБЛІОТЕКА · A1–C1';
   ['#print','#print-top'].forEach(id=>{$(id).disabled=state.module==='library';$(id).title=state.module==='library'?'Спочатку відкрий аркуш':'';});
-  $('#genitive').closest('label').hidden=['library','ready'].includes(state.module);
-  $('#print-description').textContent=state.module==='ready'?`Друкується тільки відкритий аркуш: ${state.paper==='A5'?'2 сторінки A5':'1 сторінка A4'}. Вимкни колонтитули браузера; для PDF обери «Зберегти як PDF».`:'Друкується відкритий розділ з поточними фільтрами. У вікні друку можна вибрати «Зберегти як PDF».';
+  $('#genitive').closest('label').hidden=['library','ready','dictionary'].includes(state.module);
+  $('#print-description').textContent=state.module==='dictionary'?`Друкується лише поточний аркуш словника: до ${state.paper==='A5'?6:12} слів. Перемикай аркуші або обери власні слова. У вікні друку вимкни колонтитули.`:state.module==='ready'?`Друкується тільки відкритий аркуш: ${state.paper==='A5'?'2 сторінки A5':'1 сторінка A4'}. Вимкни колонтитули браузера; для PDF обери «Зберегти як PDF».`:'Друкується відкритий розділ з поточними фільтрами. У вікні друку можна вибрати «Зберегти як PDF».';
 }

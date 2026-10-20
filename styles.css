@@ -64,3 +64,14 @@ select:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:700px){.library-view .topbar{display:none}.library-view .level-copy p{display:none}.library-view .shelf-intro p{display:none}.library-view .page-heading{margin-bottom:20px}.library-view .toolbar{margin-bottom:16px}}
 
 .rule-details,.reference-details{margin:20px 0;border:1px solid var(--line);border-radius:7px;background:#f0f4e9;padding:16px 18px;font-size:12px;line-height:1.8}.rule-details summary,.reference-details summary{cursor:pointer;font-weight:600;color:#48613a}.rule-details p,.reference-details p{margin:12px 0 0;color:#6b7c5c}.reference-details ul{padding-left:19px}.reference-details a{color:#4d6b3c;text-underline-offset:3px}.rule-details .details-print-note{font-size:10px;color:#859477}@media print{.rule-details,.reference-details{display:none!important}}
+
+/* Словник: короткі аркуші, той самий набір рядків на екрані й у друці. */
+.word-meta{display:block;font-size:10px;color:#69766b;margin-top:5px}
+.dictionary-tools{flex-wrap:wrap;gap:12px;align-items:center}
+.dictionary-tools select{margin-left:6px;padding:7px;border:1px solid var(--line);border-radius:6px;background:#fff;color:inherit}
+.word-pagination{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0 20px;font-size:12px;color:#647167}
+.word-pagination button:disabled,.dictionary-tools button:disabled{opacity:.4;cursor:default}
+.word-table{table-layout:fixed;width:100%}.word-table .selection-column{width:36px}.word-table th:nth-child(2){width:29%}.word-table th:nth-child(3){width:27%}.word-table td{overflow-wrap:anywhere}
+.word-table .word-button{text-align:left;white-space:normal}
+@media(max-width:650px){.word-pagination{flex-wrap:wrap;justify-content:center}.word-table th:nth-child(2){width:35%}.word-table th:nth-child(3){width:30%}.word-table .selection-column{width:28px}}
+@media print{.word-table{font-size:9pt}.word-table tr{break-inside:avoid}.word-table td,.word-table th{padding:2mm}.word-meta{font-size:7pt;margin-top:1mm}.word-table .translation{font-size:8pt}.word-table .selection-column{width:0}.word-table th:nth-child(2){width:31%}.word-table th:nth-child(3){width:28%}.word-table .word-button{font-size:9pt}body.paper-a5 .word-table{font-size:8pt}body.paper-a5 .word-table .word-button{font-size:8pt}body.paper-a5 .word-table td{font-size:8pt}}

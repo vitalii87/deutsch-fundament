@@ -28,7 +28,7 @@ for(const lang of ['en','de']){
 // Language changes must be reversible, including static text and accessibility labels.
 const element={attrs:{'aria-label':'Закрити пояснення'},closest:()=>null,hasAttribute(k){return k in this.attrs},getAttribute(k){return this.attrs[k]},setAttribute(k,v){this.attrs[k]=v}};
 const node={textContent:' Мій рівень ',parentElement:element};
-const root={querySelectorAll:()=>[element]};
+const root={querySelectorAll:selector=>selector==='.translation'?[]:[element]};
 c.NodeFilter={SHOW_TEXT:4};c.document={body:root,documentElement:{},querySelector:()=>null,createTreeWalker:()=>{let done=false;return{nextNode:()=>done?null:(done=true,node)}}};
 for(const [lang,label,title] of [['en',' My level ','Close explanation'],['de',' Mein Niveau ','Erklärung schließen'],['uk',' Мій рівень ','Закрити пояснення']]){
   c.I18N.setLanguage(lang);c.I18N.apply();assert.equal(node.textContent,label);assert.equal(element.attrs['aria-label'],title);assert.equal(c.document.documentElement.lang,lang);

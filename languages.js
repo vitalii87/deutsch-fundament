@@ -47,6 +47,17 @@ window.I18N = (() => {
       }
       originalAttributes.set(element,previous);
     }
+    // German examples need no identical German translation underneath them.
+    for(const translation of root.querySelectorAll('.translation')) {
+      let before='';
+      for(const sibling of translation.parentNode.childNodes){
+        if(sibling===translation)break;
+        if(sibling.nodeType===1&&sibling.classList.contains('translation'))continue;
+        before+=sibling.textContent;
+      }
+      const normalise=s=>s.replace(/\b(?:Nom|Akk|Dat|Gen)\b/g,'').trim().replace(/^(?:der|die|das)\s+/,'');
+      translation.hidden=language==='de'&&normalise(before)===normalise(translation.textContent);
+    }
   }
   function setLanguage(next) {
     if(!supported.includes(next))return;

@@ -7,7 +7,7 @@ window.I18N = (() => {
   try{saved=localStorage.getItem('fundament-language');}catch{}
   language=supported.includes(requested)?requested:supported.includes(saved)?saved:'uk';
   if(supported.includes(requested))try{localStorage.setItem('fundament-language',language);}catch{}
-  const entries = window.FUNDAMENT_LOCALES;
+  const entries = Object.assign(window.FUNDAMENT_LOCALES,window.EXTRA_LOCALES||{});
   const escapeRE = s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
   const pattern = new RegExp('(?<![\\p{L}])(?:'+Object.keys(entries).sort((a,b)=>b.length-a.length).map(escapeRE).join('|')+')(?![\\p{L}])','gu');
   const originalText = new WeakMap();

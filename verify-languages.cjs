@@ -4,7 +4,7 @@ const read=name=>fs.readFileSync(path.join(__dirname,name),'utf8');
 const c={URL,location:{href:'https://example.com/?lang=en'},localStorage:{getItem:()=>null,setItem:()=>{}},history:{replaceState:()=>{}}};
 c.window=c;
 vm.createContext(c);
-for(const name of ['data.js','vocabulary.js','grammar.js','sheets.js','more-sheets.js','locales.js','languages.js','library.js'])vm.runInContext(read(name),c);
+for(const name of ['data.js','vocabulary.js','grammar.js','sheets.js','more-sheets.js','extra-sheets.js','locales.js','languages.js','library.js'])vm.runInContext(read(name),c);
 const app=read('app.js');vm.runInContext(app.slice(0,app.indexOf('const renderers=')),c);
 const check=(code)=>vm.runInContext(code,c);
 for(const lang of ['en','de']){
@@ -35,4 +35,5 @@ for(const [lang,label,title] of [['en',' My level ','Close explanation'],['de','
 }
 // Direct language links still work if localStorage is blocked.
 const blocked={URL,location:{href:'https://example.com/?lang=de'},localStorage:{getItem(){throw Error('blocked')},setItem(){throw Error('blocked')}},FUNDAMENT_LOCALES:c.FUNDAMENT_LOCALES};blocked.window=blocked;vm.createContext(blocked);vm.runInContext(read('languages.js'),blocked);assert.equal(blocked.I18N.lang,'de');
-console.log('Passed: 3 languages; 37 sheets in English and German; 240 words; translated search; reversible UI and accessibility text; blocked storage.');
+const ids=new Set();for(const s of c.SHEET_LIBRARY.sheets){assert(!ids.has(s.id),'Duplicate '+s.id);ids.add(s.id);assert.equal(s.parts.length,2,s.id+' parts');for(const p of s.parts){assert(p.head.length>0&&p.rows.length>0,s.id);for(const row of p.rows)assert.equal(row.length,p.head.length,s.id+' columns');}}for(const s of c.SHEET_LIBRARY.sheets)if(s.requires)assert(ids.has(s.requires),s.id+' missing prerequisite '+s.requires);
+console.log('Passed: 3 languages; '+c.SHEET_LIBRARY.sheets.length+' sheets in English and German; 240 words; valid links and tables; translated search; reversible UI and accessibility text; blocked storage.');

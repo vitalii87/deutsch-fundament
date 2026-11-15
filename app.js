@@ -7,6 +7,7 @@ const genders = {der:'m',die:'f',das:'n'};
 let saved = {};
 try { saved = JSON.parse(localStorage.getItem('fundament-v1') || '{}') || {}; } catch {}
 const state = {level:SHEET_LIBRARY.levels.includes(saved.level)?saved.level:'A2',levelOnly:!!saved.levelOnly,wordKind:['Усе','Іменник','Дієслово','Прикметник','Прислівник'].includes(saved.wordKind)?saved.wordKind:'Усе',sheetId:'',paperPreview:false,module:'library',filter:'Усе',query:'',translations:saved.translations!==false,examples:saved.examples!==false,genitive:!!saved.genitive,mono:!!saved.mono,compact:!!saved.compact,paper:saved.paper==='A5'?'A5':'A4',selected:new Set(Array.isArray(saved.selected)?saved.selected:[]),onlySelected:false,highlightGenders:saved.highlightGenders!==false,highlightCases:saved.highlightCases!==false,caseFocus:['Nominativ','Akkusativ','Dativ','Genitiv'].includes(saved.caseFocus)?saved.caseFocus:'all'};
+state.highlightEndings=saved.highlightEndings!==false;
 let details = [];
 function persist(){try{localStorage.setItem('fundament-v1',JSON.stringify({...state,selected:[...state.selected]}));}catch{}}
 function trans(s){return `<span class="translation">${esc(I18N.t(s))}</span>`;}
@@ -46,9 +47,36 @@ function annotateGrammar(root){
     fragment.append(text.slice(end));textNode.replaceWith(fragment);
   }
 }
+const pluralEndings=new Map(D.words.filter(w=>w[1]&&w[2]!=='—').map(w=>[w[2],GRAMMAR.endings.plural(w[0],w[2])]).filter(([,suffix])=>suffix));
+function annotateEndings(root){
+  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),nodes=[];
+  let node;
+  while((node=walker.nextNode())){
+    const el=node.parentElement;
+    if(el.closest('td,.ready-examples')&&!el.closest('.translation,.case-badge,.inflection-ending,.word-meta'))nodes.push(node);
+  }
+  for(const node of nodes){
+    const value=node.textContent;
+    // Leave explanatory text as a single unit for localisation.
+    if(/\p{Script=Cyrillic}/u.test(value))continue;
+    const fragment=document.createDocumentFragment();
+    let offset=0;
+    for(const m of value.matchAll(/(?<![\p{L}-])-\p{L}+|\p{L}+/gu)){
+      const word=m[0], suffix=word.startsWith('-')?
+        (GRAMMAR.endings.bare.has(word.slice(1))?word:''):
+        GRAMMAR.endings.forms.get(word)||pluralEndings.get(word);
+      if(!suffix)continue;
+      fragment.append(value.slice(offset,m.index+word.length-suffix.length));
+      const mark=document.createElement('span');mark.className='inflection-ending';mark.textContent=suffix;
+      fragment.append(mark);offset=m.index+word.length;
+    }
+    if(offset){fragment.append(value.slice(offset));node.replaceWith(fragment);}
+  }
+}
 function applyHighlights(){
   document.body.classList.toggle('no-gender-highlights',!state.highlightGenders);
-  ['highlightGenders','highlightCases'].forEach(k=>$('#'+k).checked=state[k]);
+  document.body.classList.toggle('show-endings',state.highlightEndings);
+  ['highlightGenders','highlightCases','highlightEndings'].forEach(k=>$('#'+k).checked=state[k]);
   $('#caseFocus').value=state.caseFocus;$('#caseFocus').disabled=!state.highlightCases;
   document.querySelectorAll('[data-case]').forEach(el=>el.classList.toggle('case-active',state.highlightCases&&(state.caseFocus==='all'||state.caseFocus===el.dataset.case)));
   $('#highlight-summary').textContent=[state.highlightGenders?'Колір тексту: рід':'Роди без кольору',state.highlightCases?`Підкреслення: ${state.caseFocus==='all'?'усі відмінки':state.caseFocus}`:'Відмінки без підсвічування'].join(' · ');I18N.apply();
@@ -112,14 +140,14 @@ function applySettings(){renderLevelPanel();applyHighlights();document.body.clas
 function render(){details=[];filters();const sheet=currentSheet();const mod=state.module==='ready'?{nav:sheet.title,title:sheet.title,subtitle:sheet.description,eyebrow:`ГОТОВИЙ АРКУШ / ${sheet.level}`} : D.modules.find(m=>m.id===state.module);$('#title').textContent=mod.title;$('#subtitle').textContent=mod.subtitle;$('#eyebrow').textContent=mod.eyebrow;$('#nav').innerHTML=D.modules.map(m=>`<a href="#${m.id}" class="${m.id===state.module||(m.id==='library'&&state.module==='ready')?'active':''}" ${m.id===state.module||(m.id==='library'&&state.module==='ready')?'aria-current="page"':''}><span>${m.icon}</span><span>${m.nav}</span></a>`).join('');let html=renderers[state.module]();$('#content').innerHTML=`<div class="print-title"><h1>${mod.nav}</h1><p id="highlight-summary"></p><p>fundament · Німецька з опорою · ${state.level}${state.filter!=='Усе'?' · '+esc(state.filter):''}${state.query?' · Пошук: '+esc(state.query):''}</p></div>`+html;
   // У великих довідкових таблицях додатково залишаємо лише блоки зі збігом.
   if(state.query&&['articles','pronouns','guide'].includes(state.module)){let count=0;$('#content').querySelectorAll('.sheet').forEach(s=>{if(!matches(s.textContent))s.remove();else count++;});if(!count)$('#content').insertAdjacentHTML('beforeend',empty());}
-  annotateGrammar($('#content'));applySettings();document.title=I18N.t(`${mod.nav} — Fundament`);I18N.apply();
+  annotateGrammar($('#content'));annotateEndings($('#content'));applySettings();document.title=I18N.t(`${mod.nav} — Fundament`);I18N.apply();
 }
 function route(){const id=location.hash.slice(1);const sheet=id.startsWith('sheet/')?SHEET_LIBRARY.sheets.find(s=>s.id===id.slice(6)):null;state.sheetId=sheet?sheet.id:'';state.module=sheet?'ready':D.modules.some(m=>m.id===id)?id:'library';if(sheet&&levelRank(sheet.level)>levelRank(state.level)){state.level=sheet.level;persist();}state.query='';state.filter='Усе';$('#search').value='';render();window.scrollTo(0,0);}
 $('#search').addEventListener('input',e=>{state.query=e.target.value.trim();render();});
 document.addEventListener('keydown',e=>{if(e.key==='/'&&!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)&&!$('#detail').open){e.preventDefault();$('#search').focus();}});
 ['translations','examples','genitive'].forEach(k=>$('#'+k).addEventListener('change',e=>{state[k]=e.target.checked;persist();render();}));
 ['mono','compact'].forEach(k=>$('#'+k).addEventListener('click',()=>{state[k]=!state[k];persist();applySettings();}));
-['highlightGenders','highlightCases'].forEach(k=>$('#'+k).addEventListener('change',e=>{state[k]=e.target.checked;persist();applyHighlights();}));
+['highlightGenders','highlightCases','highlightEndings'].forEach(k=>$('#'+k).addEventListener('change',e=>{state[k]=e.target.checked;persist();applyHighlights();}));
 $('#caseFocus').addEventListener('change',e=>{state.caseFocus=e.target.value;persist();applyHighlights();});
 $('#paper').addEventListener('change',e=>{state.paper=e.target.value;persist();if(['ready','dictionary'].includes(state.module))render();else applySettings();});
 $('#level').addEventListener('change',e=>{state.level=e.target.value;state.query='';state.filter='Усе';$('#search').value='';persist();if(state.module==='ready'&&levelRank(currentSheet().level)>levelRank(state.level))location.hash='library';else render();});

@@ -20,7 +20,7 @@ function renderLibrary(){
 }
 function renderSheetPart(part,index){
   // Стовпчики родів забарвлюємо лише в явно позначених таблицях.
-  const genderColumns=part.head.map(h=>h.includes('чол.')||h==='Чоловічий'?'m':h.includes('жін.')||h==='Жіночий'?'f':h.includes('сер.')||h==='Середній'?'n':h.includes('мн.')?'p':'');
+  const genderColumns=part.head.map(h=>h.includes('чол.')||h==='Чоловічий'?'m':h.includes('жін.')||h==='Жіночий'?'f':h.includes('сер.')||h==='Середній'?'n':(h.includes('мн.')||h.startsWith('Множина'))?'p':'');
   const rows=part.rows.map(row=>row.map((cell,i)=>genderColumns[i]?`<span class="${genderColumns[i]}">${tagged(cell)}</span>`:tagged(cell)));
   return `<section class="ready-part"><div class="ready-part-title"><span>${String(index+1).padStart(2,'0')}</span><h3>${esc(part.title)}</h3></div>${table(part.head.map(esc),rows)}${part.examples?`<div class="ready-examples optional-examples">${part.examples.map(([de,uk])=>`<p>${tagged(de)}${trans(uk)}</p>`).join('')}</div>`:''}<p class="ready-tip"><strong>Запам’ятай.</strong> ${tagged(part.tip)}</p></section>`;
 }

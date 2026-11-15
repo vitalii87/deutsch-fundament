@@ -154,3 +154,32 @@ window.GRAMMAR = (() => {
   ].forEach(add);
   return {cases,examples};
 })();
+
+// Recognise documented inflection patterns, not arbitrary final letters.
+GRAMMAR.endings=(()=>{
+  const forms=new Map();
+  const add=(stem,suffixes)=>suffixes.split(' ').forEach(s=>forms.set(stem+s,s));
+  const adjectiveStems='gut frisch kalt stark klein groß schön neu nett alt jung rot blau grün klar ruhig wichtig freundlich schnell langsam richtig teuer günstig interessant möglich bekannt fremd deutsch müd größ besser schönst kleinst schnellst jugendlich';
+  for(const stem of adjectiveStems.split(' ')){
+    add(stem,'e en er es em');
+    add(stem[0].toUpperCase()+stem.slice(1),'e en er es em');
+  }
+  for(const stem of 'ein kein mein dein sein ihr Ihr unser eur dies welch jed manch solch beid all'.split(' '))add(stem,'e en er es em');
+  for(const word of ['der','die','das','den','dem','des','Der','Die','Das','Den','Dem','Des'])forms.set(word,word.slice(1));
+  for(const stem of 'lern mach spiel frag sag wohn kauf hör such schreib komm geh bleib sing trink fahr fähr les lies geb gib nehm nimm sprech sprich seh sieh helf hilf find bild antwort öffn wart arbeit erklär prüf reparier übersetz studier organisier'.split(' ')){
+    const extra=/[dt]$/.test(stem);
+    add(stem,extra?'e est et en':/[sßxz]$/.test(stem)?'e t en':'e st t en');
+  }
+  for(const [stem,end] of [['hab','e en t'],['ha','st t'],['werd','e en et'],['kann','st'],['könn','en t'],['muss','t'],['müss','en t'],['darf','st'],['dürf','en t'],['soll','st en t'],['will','st'],['woll','en t'],['mag','st'],['mög','en t'],['möcht','e est en et'],['wär','e en est et'],['hätt','e en est et'],['würd','e en est et'],['Freunde','n'],['Kinder','n'],['Leute','n'],['Name','n ns'],['Kollege','n'],['Junge','n'],['Kunde','n'],['Mensch','en'],['Herr','n en'],['Student','en'],['Patient','en'],['Nachbar','n'],['Regen','s'],['Mann','es'],['Kind','es'],['Wein','es s'],['Wasser','s'],['Haus','es'],['Zug','es']])if(end)add(stem,end);
+  for(const [stem,end] of [['gemach','t'],['gelern','t'],['gearbeit','et'],['gekauf','t'],['gesag','t'],['gespiel','t'],['gefrag','t'],['gegang','en'],['gekomm','en'],['geles','en'],['geschrieb','en'],['getrunk','en']])add(stem,end);
+  const bare=new Set(['e','en','er','es','em','n','s','st','t','et','est']);
+  const fold=s=>s.replace(/[äÄ]/g,'a').replace(/[öÖ]/g,'o').replace(/[üÜ]/g,'u');
+  function plural(singular,form){
+    for(const suffix of ['nen','er','en','e','n','s']){
+      const stem=form.slice(0,-suffix.length);
+      if(form.endsWith(suffix)&&fold(stem)===fold(singular))return suffix;
+    }
+    return '';
+  }
+  return {forms,bare,plural};
+})();

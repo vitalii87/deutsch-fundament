@@ -165,4 +165,12 @@
     ]});
   T('Артикль','Article','Artikel');T('Займенник','Pronoun','Pronomen');T('Дієслово','Verb','Verb');T('Допоміжне дієслово','Auxiliary verb','Hilfsverb');
   SHEET_LIBRARY.references.push({title:T('Hueber · Mittelstufe aktuell B1–C1 · зміст','Hueber · Mittelstufe aktuell B1–C1 · contents','Hueber · Mittelstufe aktuell B1–C1 · Inhaltsverzeichnis'),url:advanced});
+  T('Закінчення в таблицях','Endings in tables','Endungen in Tabellen');
+  T('Множина','Plural','Plural');
+  T('Множина (mein-)','Plural (mein-)','Plural (mein-)');
+  T('Ein в однині, mein- у множині','Ein in the singular, mein- in the plural','Ein im Singular, mein- im Plural');
+  T('У множині після означеного артикля прикметник завжди має -en. У Dativ: Freunde → Freunden.','After the definite article, plural adjective endings are always -en. In the Dativ: Freunde → Freunden.','Nach dem bestimmten Artikel endet das Adjektiv im Plural immer auf -en. Im Dativ: Freunde → Freunden.');
+  T('З mein- і без артикля.','With mein- and without an article.','Mit mein- und ohne Artikel.');
+  T('У Dativ обидва прикметники мають -en.','In the Dativ both adjectives end in -en.','Im Dativ enden beide Adjektive auf -en.');
+  T('Ein не має множини. Без артикля: gute Freunde (Nom / Akk), mit guten Freunden (Dat).','Ein has no plural. Without an article: gute Freunde (Nom / Akk), mit guten Freunden (Dat).','Ein hat keinen Plural. Ohne Artikel: gute Freunde (Nom / Akk), mit guten Freunden (Dat).');
 })();

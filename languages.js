@@ -1,6 +1,6 @@
 /* UI language is independent of learning settings and German grammatical examples. */
 window.I18N = (() => {
-  const supported = ['uk','en','de'];
+  const supported = ['uk','en','de','ru'];
   let language = 'uk';
   let requested, saved;
   try{requested=new URL(location.href).searchParams.get('lang');}catch{}
@@ -8,16 +8,18 @@ window.I18N = (() => {
   language=supported.includes(requested)?requested:supported.includes(saved)?saved:'uk';
   if(supported.includes(requested))try{localStorage.setItem('fundament-language',language);}catch{}
   const entries = Object.assign(window.FUNDAMENT_LOCALES,window.EXTRA_LOCALES||{});
+  const russian=window.FUNDAMENT_RUSSIAN||{};
   const escapeRE = s => s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-  const pattern = new RegExp('(?<![\\p{L}])(?:'+Object.keys(entries).sort((a,b)=>b.length-a.length).map(escapeRE).join('|')+')(?![\\p{L}])','gu');
+  const pattern = new RegExp('(?<![\\p{L}])(?:'+[...new Set([...Object.keys(entries),...Object.keys(russian)])].sort((a,b)=>b.length-a.length).map(escapeRE).join('|')+')(?![\\p{L}])','gu');
   const originalText = new WeakMap();
   const originalAttributes = new WeakMap();
   function text(value) {
     const source = String(value);
     if(language==='uk')return source;
     const index=language==='en'?0:1;
-    if(entries[source])return entries[source][index];
-    return source.replace(pattern,key=>entries[key][index]);
+    const translate=key=>language==='ru'?(russian[key]??key):(entries[key]?.[index]??key);
+    if(language==='ru'?Object.hasOwn(russian,source):Object.hasOwn(entries,source))return translate(source);
+    return source.replace(pattern,translate);
   }
   function apply(root=document.body) {
     document.documentElement.lang=language;

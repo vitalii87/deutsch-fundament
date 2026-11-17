@@ -4,7 +4,7 @@ const read=name=>fs.readFileSync(path.join(__dirname,name),'utf8');
 const c={URL,location:{href:'https://example.com/?lang=en'},localStorage:{getItem:()=>null,setItem:()=>{}},history:{replaceState:()=>{}}};
 c.window=c;
 vm.createContext(c);
-for(const name of ['data.js','vocabulary.js','grammar.js','sheets.js','more-sheets.js','extra-sheets.js','locales.js','languages.js','library.js'])vm.runInContext(read(name),c);
+for(const name of ['data.js','vocabulary.js','grammar.js','sheets.js','more-sheets.js','extra-sheets.js','locales.js','russian.js','languages.js','library.js'])vm.runInContext(read(name),c);
 const app=read('app.js');vm.runInContext(app.slice(0,app.indexOf('const renderers=')),c);
 const check=(code)=>vm.runInContext(code,c);
 for(const lang of ['en','de']){
@@ -25,15 +25,34 @@ for(const lang of ['en','de']){
     assert(!/[А-Яа-яІіЇїЄєҐґ]/.test(c.I18N.t(check('renderReadySheet()').replace(/<[^>]*>/g,' '))),sheet.id+' '+lang);
   }
 }
+// Russian is a complete parallel catalogue; German examples stay German.
+c.I18N.setLanguage('ru');
+for(const source of Object.keys(c.FUNDAMENT_LOCALES)){
+ assert(Object.hasOwn(c.FUNDAMENT_RUSSIAN,source),'Missing Russian: '+source);
+ assert(c.FUNDAMENT_RUSSIAN[source].trim(),'Empty Russian: '+source);
+ assert(!/[іІїЇєЄґҐ]/.test(c.I18N.t(source)),'Ukrainian residue: '+source);
+}
+assert.equal(c.I18N.t('Мій рівень'),'Мой уровень');
+assert.equal(c.I18N.t('мати'),'иметь');
+assert.equal(check("I18N.t(D.words.find(w=>w[0]==='Mutter')[3])"),'мама; мать');
+check("state.level='C1';state.levelOnly=false;state.filter='Усе';state.wordKind='Усе';state.query='ответственность'");
+assert(check("visibleWords().some(w=>w[0]==='Verantwortung')"),'Russian vocabulary search');
+check("state.query=''");
+for(const sheet of c.SHEET_LIBRARY.sheets){
+ check('state.sheetId='+JSON.stringify(sheet.id));
+ assert(!/[іІїЇєЄґҐ]/.test(c.I18N.t(check('renderReadySheet()').replace(/<[^>]*>/g,' '))),sheet.id+' RU');
+}
+assert.equal(c.I18N.t('der gute Mann'),'der gute Mann');
+c.I18N.setLanguage('uk');assert.equal(c.I18N.t('Мій рівень'),'Мій рівень');
 // Language changes must be reversible, including static text and accessibility labels.
 const element={attrs:{'aria-label':'Закрити пояснення'},closest:()=>null,hasAttribute(k){return k in this.attrs},getAttribute(k){return this.attrs[k]},setAttribute(k,v){this.attrs[k]=v}};
 const node={textContent:' Мій рівень ',parentElement:element};
 const root={querySelectorAll:selector=>selector==='.translation'?[]:[element]};
 c.NodeFilter={SHOW_TEXT:4};c.document={body:root,documentElement:{},querySelector:()=>null,createTreeWalker:()=>{let done=false;return{nextNode:()=>done?null:(done=true,node)}}};
-for(const [lang,label,title] of [['en',' My level ','Close explanation'],['de',' Mein Niveau ','Erklärung schließen'],['uk',' Мій рівень ','Закрити пояснення']]){
+for(const [lang,label,title] of [['en',' My level ','Close explanation'],['de',' Mein Niveau ','Erklärung schließen'],['ru',' Мой уровень ','Закрыть объяснение'],['uk',' Мій рівень ','Закрити пояснення']]){
   c.I18N.setLanguage(lang);c.I18N.apply();assert.equal(node.textContent,label);assert.equal(element.attrs['aria-label'],title);assert.equal(c.document.documentElement.lang,lang);
 }
 // Direct language links still work if localStorage is blocked.
 const blocked={URL,location:{href:'https://example.com/?lang=de'},localStorage:{getItem(){throw Error('blocked')},setItem(){throw Error('blocked')}},FUNDAMENT_LOCALES:c.FUNDAMENT_LOCALES};blocked.window=blocked;vm.createContext(blocked);vm.runInContext(read('languages.js'),blocked);assert.equal(blocked.I18N.lang,'de');
 const ids=new Set();for(const s of c.SHEET_LIBRARY.sheets){assert(!ids.has(s.id),'Duplicate '+s.id);ids.add(s.id);assert.equal(s.parts.length,2,s.id+' parts');for(const p of s.parts){assert(p.head.length>0&&p.rows.length>0,s.id);for(const row of p.rows)assert.equal(row.length,p.head.length,s.id+' columns');}}for(const s of c.SHEET_LIBRARY.sheets)if(s.requires)assert(ids.has(s.requires),s.id+' missing prerequisite '+s.requires);
-console.log('Passed: 3 languages; '+c.SHEET_LIBRARY.sheets.length+' sheets in English and German; 240 words; valid links and tables; translated search; reversible UI and accessibility text; blocked storage.');
+console.log('Passed: 4 languages; '+c.SHEET_LIBRARY.sheets.length+' sheets with English, German and Russian coverage; 240 words; valid links and tables; translated search; reversible UI and accessibility text; blocked storage.');
